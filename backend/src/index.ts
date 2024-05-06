@@ -7,20 +7,22 @@ const wss = new WebSocket.Server({ port: 8080 });
 let senderSocket : WebSocket | null = null;
 let recieverSocket : WebSocket | null = null;
 wss.on('connection', (ws) => {
-    console.log('Client connected');
+    
 
     
     ws.on('message', (message : string) => {
        const data = JSON.parse(message);
        const type = data.type;
-        
+   
        switch(type)
        {
          case "sender" : 
+            console.log('Sender connected');
             senderSocket = ws;
             break;
 
          case "reciever" :
+            console.log('Reciever connected');
             recieverSocket = ws;
             break;
 
