@@ -1,9 +1,8 @@
 import { useEffect, useRef } from "react"
 
 
-export const Reciever = () => {
-    
-    const videoRef = useRef<HTMLVideoElement>(null);
+export const Receiver = () => {
+
     useEffect(() => {
         const socket = new WebSocket('ws://localhost:8080');
         socket.onopen = () => {
@@ -19,12 +18,14 @@ export const Reciever = () => {
 
    async function startReceiving(socket : WebSocket)
    {
+        const video = document.createElement('video');
+        document.body.appendChild(video);
+
         const pc = new RTCPeerConnection();
         pc.ontrack = (event) => {
-            if(videoRef.current)
-            {
-                videoRef.current.srcObject = new MediaStream([event.track]);
-            }
+            video.srcObject = new MediaStream([event.track]);
+            video.muted = true;
+            video.play();
         }
 
         socket.onmessage = async(event) => {
@@ -49,7 +50,6 @@ export const Reciever = () => {
     return(
         <div>
             reciever
-            <video ref={videoRef}></video>
         </div>
     )
 }
