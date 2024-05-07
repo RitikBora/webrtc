@@ -7,7 +7,7 @@ export const Receiver = () => {
         const socket = new WebSocket('ws://localhost:8080');
         socket.onopen = () => {
             socket.send(JSON.stringify({
-                type: 'reciever'
+                type: 'receiver'
             }));
         }
 
@@ -39,9 +39,9 @@ export const Receiver = () => {
                     socket.send(JSON.stringify({type: "createAnswer" , sdp : answer}));
                     break;
 
-                case "addIceCandidate":
+                case "iceCandidate":
                     
-                    pc.addIceCandidate(data.iceCandidate); 
+                    pc.addIceCandidate(data.candidate); 
             }
         }       
         

@@ -34,10 +34,10 @@ export function Sender() {
            {
                 if(pc === null) return ;
                 await pc.setRemoteDescription(data.sdp);
-           }else if (data.type === "addIceCandidate")
+           }else if (data.type === "iceCandidate")
            {
                 if(pc === null) return ;
-                pc.addIceCandidate(data.iceCandidate);
+                pc.addIceCandidate(data.candidate);
            }
         };
 
@@ -47,7 +47,7 @@ export function Sender() {
        pc.onicecandidate = (event) => {
             if (event.candidate) {
                 socket.send(JSON.stringify({
-                    type: 'addIceCandidate',
+                    type: 'iceCandidate',
                     candidate: event.candidate
                 }));
             }

@@ -5,7 +5,7 @@ const wss = new WebSocket.Server({ port: 8080 });
 
 
 let senderSocket : WebSocket | null = null;
-let recieverSocket : WebSocket | null = null;
+let receiverSocket : WebSocket | null = null;
 wss.on('connection', (ws) => {
     
 
@@ -21,24 +21,24 @@ wss.on('connection', (ws) => {
             senderSocket = ws;
             break;
 
-         case "reciever" :
-            console.log('Reciever connected');
-            recieverSocket = ws;
+         case "receiver" :
+            console.log('Receiver connected');
+            receiverSocket = ws;
             break;
 
          case "createOffer" :
-            recieverSocket?.send(JSON.stringify({type: "createOffer" , sdp : data.sdp}));
+            receiverSocket?.send(JSON.stringify({type: "createOffer" , sdp : data.sdp}));
             break;
 
          case "createAnswer" :
             senderSocket?.send(JSON.stringify({type: "createAnswer" , sdp : data.sdp}));
             break;
 
-         case "addIceCandidate" : 
+         case "iceCandidate" : 
             if(ws === senderSocket)
-                recieverSocket?.send(JSON.stringify({type: "addIceCandidate" , iceCandidate : data.iceCandidate}));
-            else if(ws === recieverSocket)
-                senderSocket?.send(JSON.stringify({type: "addIceCandidate" , iceCandidate : data.iceCandidate}));
+                receiverSocket?.send(JSON.stringify({type: "iceCandidate" , candidate : data.candidate}));
+            else if(ws === receiverSocket)
+                senderSocket?.send(JSON.stringify({type: "iceCandidate" , candidate : data.candidate}));
        }
 
     });

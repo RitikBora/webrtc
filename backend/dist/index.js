@@ -7,7 +7,7 @@ const ws_1 = __importDefault(require("ws"));
 //Signaling server
 const wss = new ws_1.default.Server({ port: 8080 });
 let senderSocket = null;
-let recieverSocket = null;
+let receiverSocket = null;
 wss.on('connection', (ws) => {
     ws.on('message', (message) => {
         const data = JSON.parse(message);
@@ -17,21 +17,21 @@ wss.on('connection', (ws) => {
                 console.log('Sender connected');
                 senderSocket = ws;
                 break;
-            case "reciever":
-                console.log('Reciever connected');
-                recieverSocket = ws;
+            case "receiver":
+                console.log('Receiver connected');
+                receiverSocket = ws;
                 break;
             case "createOffer":
-                recieverSocket === null || recieverSocket === void 0 ? void 0 : recieverSocket.send(JSON.stringify({ type: "createOffer", sdp: data.sdp }));
+                receiverSocket === null || receiverSocket === void 0 ? void 0 : receiverSocket.send(JSON.stringify({ type: "createOffer", sdp: data.sdp }));
                 break;
             case "createAnswer":
                 senderSocket === null || senderSocket === void 0 ? void 0 : senderSocket.send(JSON.stringify({ type: "createAnswer", sdp: data.sdp }));
                 break;
-            case "addIceCandidate":
+            case "iceCandidate":
                 if (ws === senderSocket)
-                    recieverSocket === null || recieverSocket === void 0 ? void 0 : recieverSocket.send(JSON.stringify({ type: "addIceCandidate", iceCandidate: data.iceCandidate }));
-                else if (ws === recieverSocket)
-                    senderSocket === null || senderSocket === void 0 ? void 0 : senderSocket.send(JSON.stringify({ type: "addIceCandidate", iceCandidate: data.iceCandidate }));
+                    receiverSocket === null || receiverSocket === void 0 ? void 0 : receiverSocket.send(JSON.stringify({ type: "iceCandidate", candidate: data.candidate }));
+                else if (ws === receiverSocket)
+                    senderSocket === null || senderSocket === void 0 ? void 0 : senderSocket.send(JSON.stringify({ type: "iceCandidate", candidate: data.candidate }));
         }
     });
     ws.on('close', () => {
