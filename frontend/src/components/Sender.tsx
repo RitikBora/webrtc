@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 export function Sender() {
     const [socket, setSocket] = useState<WebSocket | null>(null);
+    const [peerCount , setPeerCount] = useState(0);
 
     
     useEffect(() =>
@@ -13,6 +14,15 @@ export function Sender() {
             ws.send(JSON.stringify({type : "sender"}));
         }
 
+        ws.onmessage = (event) =>
+        {
+            const data  = JSON.parse(event.data);
+            if(data.type === "addReceiver")
+            {
+                setPeerCount(count => count + 1);
+            }
+                
+        }
          return () => {
         setSocket(null);    
         ws.close();
@@ -27,45 +37,53 @@ export function Sender() {
             return;
         }
 
-        const pc = new RTCPeerConnection();
+        
+        
         socket.onmessage = async (event) => {
             const data = JSON.parse(event.data);
            if(data.type === "createAnswer")
-           {
-                if(pc === null) return ;
-                await pc.setRemoteDescription(data.sdp);
+           {    
+                if(!peerConnections[data.index]) return;
+                peerConnections[data.index].setRemoteDescription(data.sdp);
+                    
            }else if (data.type === "iceCandidate")
            {
-                if(pc === null) return ;
-                pc.addIceCandidate(data.candidate);
+                if(peerConnections[data.index] === null) return ;
+                peerConnections[data.index].addIceCandidate(data.candidate);
            }
         };
 
+        const peerConnections : RTCPeerConnection[] = [];
 
-        if(pc == null)  return;
+        for(let i = 0 ; i < peerCount ; i ++)
+        {
+            const pc = new RTCPeerConnection();
 
-       pc.onicecandidate = (event) => {
+            pc.onicecandidate = ((event) => {
             if (event.candidate) {
                 socket.send(JSON.stringify({
                     type: 'iceCandidate',
-                    candidate: event.candidate
+                    candidate: event.candidate,
+                    index : i
                 }));
             }
-        }
+            })
 
-        pc.onnegotiationneeded = async () =>
-        {
-            
-            const offer = await pc.createOffer();
-            await pc.setLocalDescription(offer);
-            socket?.send(JSON.stringify({type : "createOffer" , sdp : offer}));
+             pc.onnegotiationneeded = async () =>
+            {
+                console.log("negotiation required")
+                const offer = await pc.createOffer();
+                await pc.setLocalDescription(offer);
+                socket?.send(JSON.stringify({type : "createOffer" , sdp : offer , index : i}));
+            }
+            peerConnections.push(pc);
         }
 
         //connected to reciever
-        getCameraStreamAndSend(pc);
+        getCameraStreamAndSend(peerConnections);
     }
 
-     const getCameraStreamAndSend = (pc: RTCPeerConnection) => {
+     const getCameraStreamAndSend = (peerConnections : RTCPeerConnection[]) => {
         navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
             const video = document.createElement('video');
             video.srcObject = stream;
@@ -73,7 +91,9 @@ export function Sender() {
             // this is wrong, should propogate via a component
             document.body.appendChild(video);
             stream.getTracks().forEach((track) => {
-                pc?.addTrack(track);
+                peerConnections.forEach(peer => {
+                    peer.addTrack(track);
+                });
             });
         });
     }

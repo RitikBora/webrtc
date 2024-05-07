@@ -36,7 +36,7 @@ export const Receiver = () => {
                     pc.setRemoteDescription(data.sdp);
                     const answer = await pc.createAnswer();
                     pc.setLocalDescription(answer);
-                    socket.send(JSON.stringify({type: "createAnswer" , sdp : answer}));
+                    socket.send(JSON.stringify({type: "createAnswer" , sdp : answer , index : data.index}));
                     break;
 
                 case "iceCandidate":
