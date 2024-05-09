@@ -1,56 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react"
 
 export function Sender() {
-    const [socket, setSocket] = useState<WebSocket | null>(null);
+    const [pc , setPC] = useState<RTCPeerConnection | null>(null);
 
-    
-    useEffect(() =>
-    {
-        const ws = new WebSocket("ws://localhost:8080/");
-        setSocket(ws);
-        ws.onopen = () =>
-        {
-            ws.send(JSON.stringify({type : "sender"}));
-        }
+   useEffect(() =>
+   {
 
-         return () => {
-        setSocket(null);    
-        ws.close();
-        };
-
-    } , [])
-
-    async function  onsubmit() {
-
-          if (!socket) {
-            alert("Socket not found");
-            return;
-        }
-
+        const socket = new WebSocket('ws://localhost:8080');
         const pc = new RTCPeerConnection();
-        socket.onmessage = async (event) => {
-            const data = JSON.parse(event.data);
-           if(data.type === "createAnswer")
-           {
-                if(pc === null) return ;
-                await pc.setRemoteDescription(data.sdp);
-           }else if (data.type === "iceCandidate")
-           {
-                if(pc === null) return ;
-                pc.addIceCandidate(data.candidate);
-           }
-        };
+        setPC(pc);
 
-
-        if(pc == null)  return;
-
-       pc.onicecandidate = (event) => {
-            if (event.candidate) {
-                socket.send(JSON.stringify({
-                    type: 'iceCandidate',
-                    candidate: event.candidate
-                }));
-            }
+        socket.onopen = () =>
+        {
+            socket.send(JSON.stringify({type : "sender"}));
         }
 
         pc.onnegotiationneeded = async () =>
@@ -61,11 +23,55 @@ export function Sender() {
             socket?.send(JSON.stringify({type : "createOffer" , sdp : offer}));
         }
 
-        //connected to reciever
-        getCameraStreamAndSend(pc);
-    }
+         pc.onicecandidate = (event) => {
+            if (event.candidate) {
+                socket.send(JSON.stringify({
+                    type: 'iceCandidate',
+                    candidate: event.candidate
+                }));
+            }
+        }
+        
+        pc.ontrack = (event) =>
+        {
+            const video = document.createElement('video');
+            document.body.appendChild(video);
+            video.srcObject = new MediaStream([event.track]);
+            video.muted = true;
+            video.play();
+        }
 
-     const getCameraStreamAndSend = (pc: RTCPeerConnection) => {
+        socket.onmessage = async (event) =>
+        {
+            const data = JSON.parse(event.data);
+            switch(data.type)
+            {
+                
+                case "createAnswer": {
+                    const answer = data.sdp;
+                    await pc.setRemoteDescription(answer);
+                    break;}
+
+                case "iceCandidate":
+                    pc.addIceCandidate(data.candidate);
+                    break;
+                 case "createOffer":{
+                    pc.setRemoteDescription(data.sdp);
+                    const answer = await pc.createAnswer(); 
+                    pc.setLocalDescription(answer);
+                    socket.send(JSON.stringify({type : "createAnswer" , sdp : answer}));
+                    break;
+                 }
+            }
+        }
+        
+        return () => {
+            socket.close();
+        };
+   }   , [])  
+
+    function getCameraStreamAndSend()
+    {
         navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
             const video = document.createElement('video');
             video.srcObject = stream;
@@ -78,9 +84,9 @@ export function Sender() {
         });
     }
     return (
-        
         <div>
-            <button onClick={onsubmit}>Send Video</button>
+            sender
+            <button onClick={getCameraStreamAndSend}>send video</button>
         </div>
     )
 }
