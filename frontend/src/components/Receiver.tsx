@@ -19,6 +19,7 @@ export const Receiver = () => {
 
         
          pc.ontrack = (event) => {
+            console.log(event.track);
             const video = document.createElement('video');
             document.body.appendChild(video);
             video.srcObject = new MediaStream([event.track]);
@@ -57,7 +58,7 @@ export const Receiver = () => {
 
                 case "iceCandidate":
                     pc.addIceCandidate(data.candidate);
-                
+                    break;
                 case "createAnswer": {
                     const answer = data.sdp;
                     await pc.setRemoteDescription(answer);

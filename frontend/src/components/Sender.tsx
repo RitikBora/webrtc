@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 
 export function Sender() {
     const [pc , setPC] = useState<RTCPeerConnection | null>(null);
+    const selfVideoRef = useRef<HTMLVideoElement>(null)
 
    useEffect(() =>
    {
@@ -73,20 +74,29 @@ export function Sender() {
     function getCameraStreamAndSend()
     {
         navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-            const video = document.createElement('video');
-            video.srcObject = stream;
-            video.play();
-            // this is wrong, should propogate via a component
-            document.body.appendChild(video);
+             if(selfVideoRef.current)
+            {
+                selfVideoRef.current.srcObject = stream;
+                selfVideoRef.current.muted = true;
+                selfVideoRef.current.play();
+            }
             stream.getTracks().forEach((track) => {
                 pc?.addTrack(track);
             });
+
         });
     }
-    return (
+       return (
         <div>
-            sender
-            <button onClick={getCameraStreamAndSend}>send video</button>
+            <div>
+                        <video ref={selfVideoRef} >
+                            <source src="your-video-source.mp4" type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+            <div>
+                <button onClick={getCameraStreamAndSend}>Send Video</button>
+            </div>
         </div>
     )
 }
