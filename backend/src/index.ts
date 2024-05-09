@@ -1,7 +1,7 @@
 import WebSocket from "ws";
 
 //Signaling server
-const wss = new WebSocket.Server({ port: 8080 });
+const wss = new WebSocket.Server({ port: 8082 });
 
 
 let senderSocket : WebSocket | null = null;

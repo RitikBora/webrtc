@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const ws_1 = __importDefault(require("ws"));
 //Signaling server
-const wss = new ws_1.default.Server({ port: 8080 });
+const wss = new ws_1.default.Server({ port: 8082 });
 let senderSocket = null;
 let receiverSocket = null;
 wss.on('connection', (ws) => {

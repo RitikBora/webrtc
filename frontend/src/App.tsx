@@ -7,7 +7,7 @@ function App() {
 
   return (
    <div>
-    <BrowserRouter>
+    <BrowserRouter basename="/zoom" >
       <Routes>
         <Route path="/sender" element= {<Sender/>}/>
         <Route path="/receiver" element= {<Receiver/>}/>
