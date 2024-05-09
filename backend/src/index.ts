@@ -35,7 +35,16 @@ wss.on('connection', (ws) => {
                senderSocket?.send(JSON.stringify({type : "createAnswer" , sdp : data.sdp}));
             else 
                receiverSocket?.send(JSON.stringify({type : "createAnswer" , sdp : data.sdp}));
-       }  
+            break;
+         
+         case "iceCandidate":
+             if (ws === senderSocket) {
+               receiverSocket?.send(JSON.stringify({ type: 'iceCandidate', candidate: data.candidate }));
+               } else if (ws === receiverSocket) {
+               senderSocket?.send(JSON.stringify({ type: 'iceCandidate', candidate: data.candidate }));
+               }
+         }
+
     });
 
     ws.on('close', () => {
