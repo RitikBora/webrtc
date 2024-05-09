@@ -1,9 +1,11 @@
-import { useEffect, useState} from "react"
+import { useEffect, useRef, useState} from "react"
 
 
 export const Receiver = () => {
 
     const [pc , setPC] = useState<RTCPeerConnection | null>(null);
+    const peerVideoRef = useRef<HTMLVideoElement>(null);
+    const selfVideoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
         
@@ -19,12 +21,11 @@ export const Receiver = () => {
 
         
          pc.ontrack = (event) => {
-            console.log(event.track);
-            const video = document.createElement('video');
-            document.body.appendChild(video);
-            video.srcObject = new MediaStream([event.track]);
-            video.muted = true;
-            video.play();
+           if (peerVideoRef.current) {
+            peerVideoRef.current.srcObject = new MediaStream([event.track]);
+            peerVideoRef.current.muted = true;
+            peerVideoRef.current.play();
+            }
         }
 
         pc.onnegotiationneeded = async () =>
@@ -76,11 +77,12 @@ export const Receiver = () => {
 
     const getCameraStreamAndSend = () => {
         navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-            const video = document.createElement('video');
-            video.srcObject = stream;
-            video.play();
-            // this is wrong, should propogate via a component
-            document.body.appendChild(video);
+            if(selfVideoRef.current)
+            {
+                selfVideoRef.current.srcObject = stream;
+                selfVideoRef.current.muted = true;
+                selfVideoRef.current.play();
+            }
             stream.getTracks().forEach((track) => {
                 pc?.addTrack(track);
             });
@@ -88,8 +90,36 @@ export const Receiver = () => {
     }
     return(
         <div>
-            reciever
-            <button onClick={getCameraStreamAndSend}>send video</button>
+           <div className="grid grid-cols-2">
+            <div className=" h-screen flex justify-center items-center">
+                <div>
+                    <div className="text-2xl font-bold">Your Video</div>
+                    <div>
+                        <video ref={selfVideoRef} >
+                            <source src="your-video-source.mp4" type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    {
+                     <div>
+                        <button onClick={getCameraStreamAndSend}>Send Video</button>
+                    </div>
+                    }
+                </div>
+           </div>
+           <div className="flex justify-center items-center">
+                <div>
+                    <div className="text-2xl font-bold">User 1 Video</div>
+                    <div>
+                        <video ref={peerVideoRef} >
+                            <source src="your-video-source.mp4" type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+           </div>
+           </div>
         </div>
     )
+
 }

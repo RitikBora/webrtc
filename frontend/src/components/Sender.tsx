@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from "react"
 
 export function Sender() {
     const [pc , setPC] = useState<RTCPeerConnection | null>(null);
+    const peerVideoRef = useRef<HTMLVideoElement>(null);
     const selfVideoRef = useRef<HTMLVideoElement>(null)
+
 
    useEffect(() =>
    {
@@ -35,11 +37,11 @@ export function Sender() {
         
         pc.ontrack = (event) =>
         {
-            const video = document.createElement('video');
-            document.body.appendChild(video);
-            video.srcObject = new MediaStream([event.track]);
-            video.muted = true;
-            video.play();
+            if (peerVideoRef.current) {
+            peerVideoRef.current.srcObject = new MediaStream([event.track]);
+            peerVideoRef.current.muted = true;
+            peerVideoRef.current.play();
+            }
         }
 
         socket.onmessage = async (event) =>
@@ -88,15 +90,35 @@ export function Sender() {
     }
        return (
         <div>
-            <div>
+           <div className="grid grid-cols-2">
+            <div className=" h-screen flex justify-center items-center">
+                <div>
+                    <div className="text-2xl font-bold">Your Video</div>
+                    <div>
                         <video ref={selfVideoRef} >
                             <source src="your-video-source.mp4" type="video/mp4" />
                             Your browser does not support the video tag.
                         </video>
                     </div>
-            <div>
-                <button onClick={getCameraStreamAndSend}>Send Video</button>
-            </div>
+                    {
+                     <div>
+                        <button onClick={getCameraStreamAndSend}>Send Video</button>
+                    </div>
+                    }
+                </div>
+           </div>
+           <div className="flex justify-center items-center">
+                <div>
+                    <div className="text-2xl font-bold">User 2 Video</div>
+                    <div>
+                        <video ref={peerVideoRef} >
+                            <source src="your-video-source.mp4" type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+           </div>
+           </div>
         </div>
     )
 }
