@@ -1,50 +1,76 @@
 import WebSocket from "ws";
-
+import { Room } from "./Room";
 //Signaling server
 const wss = new WebSocket.Server({ port: 8082 });
 
+const rooms : Room[]= []; 
 
-let senderSocket : WebSocket | null = null;
-let receiverSocket : WebSocket | null = null;
 wss.on('connection', (ws) => {
         
     ws.on('message', (message : string) => {
        const data = JSON.parse(message);
        const type = data.type;
-
-      console.log(type);
        switch(type)
        {
-         case "sender":
-            senderSocket = ws;
-            break;
+         case "connect":
+            {
+              const roomId = data.roomId;
+              let room = rooms.find(room => room.roomId === roomId);
+              if(!room)
+              {
+                room = new Room(roomId);
+                room.addUser1(ws);
+                rooms.push(room);
+              }else
+              {
+                room.addUser2(ws);
+              }
+              break;
+            }
+           case "createOffer":
+           {
+              const roomId = data.roomId;
+              let room = rooms.find(room => room.roomId === roomId);
+              if(room && room.user1 && room.user2)
+              {
+                 if(ws === room.user1)
+                  room.user2.send(JSON.stringify({type : "createOffer" , sdp : data.sdp}));
+              else  
+                  room.user1.send(JSON.stringify({type : "createOffer" , sdp : data.sdp}));
+              }
+              break;
+           }
+            case "createAnswer":
+            {
+              const roomId = data.roomId;
+              let room = rooms.find(room => room.roomId === roomId);
+              
+              if(room && room.user1 && room.user2)
+              {
+                  if(ws === room.user2)
+                    room.user1.send(JSON.stringify({type : "createAnswer" , sdp : data.sdp}));
+                  else 
+                    room.user2.send(JSON.stringify({type : "createAnswer" , sdp : data.sdp}));
+              }
+              
+              break;
+            }
+             case "iceCandidate":
+             {
+                const roomId = data.roomId;
+                let room = rooms.find(room => room.roomId === roomId);
+              
+                if(room && room.user1 && room.user2){
+                  if (ws === room.user1) {
+                  room.user2.send(JSON.stringify({ type: 'iceCandidate', candidate: data.candidate }));
+                  } else if (ws === room.user2) {
+                    room.user1.send(JSON.stringify({ type: 'iceCandidate', candidate: data.candidate }));
+                  }
+                }
+                break;
+             }
          
-         case "receiver":
-            receiverSocket = ws;
-            break;
-         
-         case "createOffer":
-            if(ws == senderSocket)
-               receiverSocket?.send(JSON.stringify({type : "createOffer" , sdp : data.sdp}));
-            else  
-               senderSocket?.send(JSON.stringify({type : "createOffer" , sdp : data.sdp}));
-            break;
-         
-         case "createAnswer":
-            if(ws === receiverSocket)
-               senderSocket?.send(JSON.stringify({type : "createAnswer" , sdp : data.sdp}));
-            else 
-               receiverSocket?.send(JSON.stringify({type : "createAnswer" , sdp : data.sdp}));
-            break;
-         
-         case "iceCandidate":
-             if (ws === senderSocket) {
-               receiverSocket?.send(JSON.stringify({ type: 'iceCandidate', candidate: data.candidate }));
-               } else if (ws === receiverSocket) {
-               senderSocket?.send(JSON.stringify({ type: 'iceCandidate', candidate: data.candidate }));
-               }
-         }
-
+       }
     });
 
     ws.on('close', () => {

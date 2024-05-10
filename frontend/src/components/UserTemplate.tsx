@@ -1,37 +1,40 @@
 import { useEffect, useRef, useState } from "react"
 
-export function UserTemplate({usertype} : {usertype : string}) {
+export function UserTemplate() {
     const [pc , setPC] = useState<RTCPeerConnection | null>(null);
     const peerVideoRef = useRef<HTMLVideoElement>(null);
     const selfVideoRef = useRef<HTMLVideoElement>(null);
     const [sentStatus ,  setSentStatus] = useState(false); 
-
+    
 
    useEffect(() =>
    {
-
-        const socket = new WebSocket('ws://ritikboradev.com:8082');
+          
+         const urlParams = new URLSearchParams(window.location.search);
+         const roomId = urlParams.get("roomId");
+         
+        // const socket = new WebSocket('ws://ritikboradev.com:8082');
+        const socket = new WebSocket("ws://localhost:8082")
         const pc = new RTCPeerConnection();
         setPC(pc);
 
         socket.onopen = () =>
         {
-            socket.send(JSON.stringify({type : usertype}));
+            socket.send(JSON.stringify({roomId : roomId , type : "connect"}));
         }
-
         pc.onnegotiationneeded = async () =>
         {
-            
             const offer = await pc.createOffer();
             await pc.setLocalDescription(offer);
-            socket?.send(JSON.stringify({type : "createOffer" , sdp : offer}));
+            socket.send(JSON.stringify({type : "createOffer" , sdp : offer , roomId: roomId}));
         }
 
          pc.onicecandidate = (event) => {
             if (event.candidate) {
                 socket.send(JSON.stringify({
                     type: 'iceCandidate',
-                    candidate: event.candidate
+                    candidate: event.candidate,
+                    roomId : roomId
                 }));
             }
         }
@@ -63,7 +66,7 @@ export function UserTemplate({usertype} : {usertype : string}) {
                     pc.setRemoteDescription(data.sdp);
                     const answer = await pc.createAnswer(); 
                     pc.setLocalDescription(answer);
-                    socket.send(JSON.stringify({type : "createAnswer" , sdp : answer}));
+                    socket.send(JSON.stringify({type : "createAnswer" , sdp : answer , roomId : roomId}));
                     break;
                  }
             }
@@ -111,7 +114,7 @@ export function UserTemplate({usertype} : {usertype : string}) {
            </div>
            <div className="flex justify-center items-center">
                 <div>
-                    <div className="text-2xl font-bold">{usertype === "sender" ? "User 2" : "User 1" } Video</div>
+                    <div className="text-2xl font-bold">Peer Video</div>
                     <div>
                         <video ref={peerVideoRef} >
                             <source src="your-video-source.mp4" type="video/mp4" />

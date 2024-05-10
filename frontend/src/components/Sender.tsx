@@ -4,7 +4,7 @@ import { UserTemplate } from "./UserTemplate"
 export function Sender() {
     return (
         <div>
-            <UserTemplate usertype="sender"/>
+            {/* <UserTemplate usertype="sender"/> */}
         </div>
     )
 }
