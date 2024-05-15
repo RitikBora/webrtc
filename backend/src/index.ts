@@ -21,6 +21,7 @@ wss.on('connection', (ws) => {
                 room = new Room(roomId);
                 room.addUser1(ws);
                 rooms.push(room);
+                ws.send(JSON.stringify({type : "roomCreated"}));
               }else
               {
                 room.addUser2(ws);

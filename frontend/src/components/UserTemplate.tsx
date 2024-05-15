@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react"
-
+import { Bounce, ToastContainer , toast } from "react-toastify";
+ import 'react-toastify/dist/ReactToastify.css';
 export function UserTemplate() {
     const [pc , setPC] = useState<RTCPeerConnection | null>(null);
     const peerVideoRef = useRef<HTMLVideoElement>(null);
     const selfVideoRef = useRef<HTMLVideoElement>(null);
     const [sentStatus ,  setSentStatus] = useState(false); 
+
     
 
    useEffect(() =>
@@ -58,6 +60,22 @@ export function UserTemplate() {
                     const answer = data.sdp;
                     await pc.setRemoteDescription(answer);
                     break;}
+                
+                case "roomCreated" :
+                {
+                    toast.info('Share URL with the receiver', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Bounce,
+                    });
+                    break;
+                }
 
                 case "iceCandidate":
                     pc.addIceCandidate(data.candidate);
@@ -124,6 +142,19 @@ export function UserTemplate() {
                 </div>
            </div>
            </div>
+           <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+            transition={Bounce}
+            />
         </div>
     )
 }
