@@ -20,7 +20,7 @@ export function Homepage() {
 
     }
     return (
-        <div className="bg-slate-300 h-screen flex flex-col justify-center items-center">
+        <div className="h-screen flex flex-col justify-center items-center">
             <div className="text-center">
                 <h1 className="font-bold text-5xl mb-6">Welcome to Bora Meet</h1>
                 <p className="text-gray-700 text-xl">World's third best video meet platform</p>

@@ -116,11 +116,13 @@ export function UserTemplate() {
         <div>
             <div className="grid grid-cols-2">
                 <div className=" h-screen flex justify-center items-center">
-                    <div>
+                    <div className="">
+                        <div className="text-3xl text-center font-bold pb-4">Your Video</div>
                         <VideoCard type="sender" reference={selfVideoRef}/>
-                        <div className='text-3xl w-96 pt-2 flex justify-center'>
-                            <button className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-lime-200 
-                            dark:focus:ring-lime-800" onClick={getCameraStreamAndSend}>
+                        <div className='text-3xl w-96 pt-2 flex justify-center mt-5'>
+                            <button className={`relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden
+                             text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-lime-200 
+                            dark:focus:ring-lime-800  ${sentStatus ? 'invisible' : 'visible'}  `} onClick={getCameraStreamAndSend}>
                                 <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
                                 Share Video
                                 </span>
@@ -128,8 +130,9 @@ export function UserTemplate() {
                         </div>
                     </div>
                 </div>
-                <div className="flex justify-center items-center">
+                <div className="flex justify-center items-center -mt-20">
                     <div>
+                        <div className="text-3xl text-center font-bold pb-4">Peer Video</div>
                         <VideoCard type="reciever"  reference={peerVideoRef} />
                     </div>
                 </div>
