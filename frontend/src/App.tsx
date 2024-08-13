@@ -9,7 +9,7 @@ function App() {
 
   return (
    <div>
-    <BrowserRouter basename="/zoom">
+    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Homepage/>}/>
         <Route path="/room" element={<Room/>}/>
