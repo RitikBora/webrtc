@@ -8,7 +8,7 @@ function App() {
 
 
   return (
-   <div>
+   <div  style={{ backgroundColor: "#fef6e4" }}>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Homepage/>}/>
