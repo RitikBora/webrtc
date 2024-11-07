@@ -25,7 +25,7 @@ export const Receiver = ({roomId} : {roomId : string}) =>
   };
 
   return(
-    <div className="flex-1 bg-[#f3d2c1] rounded-lg overflow-hidden shadow-lg">
+    <div className="flex-1 bg-[#f3d2c1] rounded-lg overflow-hidden shadow-lg min-h-96">
           {isPeerConnected ? (
             <div className="relative h-full">
               <video
@@ -45,7 +45,7 @@ export const Receiver = ({roomId} : {roomId : string}) =>
                 <Input
                   value={roomId}
                   readOnly
-                  className="bg-[#fef6e4] text-[#001858] border-[#001858]"
+                  className="bg-[#fef6e4] text-[#001858] border-[#001858] text-center"
                 />
                 <Button
                   onClick={copyRoomId}
