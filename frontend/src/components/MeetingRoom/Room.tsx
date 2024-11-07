@@ -3,12 +3,14 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Mic, MicOff, Video, VideoOff, PhoneOff, Copy} from 'lucide-react'
 import { Receiver } from './Receiver';
+import {useRecoilValue } from 'recoil';
+import {isMutedAtom , IsVideoOnAtom} from '../../../recoil/atoms'
 
 
 export const Room = () => {
 
-  const [isMuted, setIsMuted] = useState(false);
-  const [isVideoOn, setIsVideoOn] = useState(true);
+  const isMuted = useRecoilValue(isMutedAtom);
+  const isVideoOn  = useRecoilValue(IsVideoOnAtom);
   const [roomId, setRoomId] = useState('123-456-789'); 
  
 

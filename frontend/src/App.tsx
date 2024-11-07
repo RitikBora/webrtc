@@ -9,6 +9,7 @@ import { Room } from "./components/MeetingRoom/Room"
 import { ToastContainer } from "react-toastify"
 
 import "react-toastify/dist/ReactToastify.css";
+import { RecoilRoot } from "recoil"
 
 
 function App() {
@@ -18,19 +19,21 @@ function App() {
    <div  style={{ backgroundColor: "#fef6e4" }} >
    
     <BrowserRouter>
-      <div className="flex flex-col min-h-screen">
-      <AppBar/>
-      <ToastContainer/>
-      <div className="flex-1 flex flex-col">
-        <Routes>
-          <Route path="/" element={<Homepage/>}/>
-          <Route path="/room" element={<Room/>}/>
-          <Route path="/sender" element= {<Sender/>}/>
-          <Route path="/receiver" element= {<Receiver/>}/>
-        </Routes>
-      </div>
-      <Footer/>
-      </div>
+      <RecoilRoot>
+        <div className="flex flex-col min-h-screen">
+        <AppBar/>
+        <ToastContainer/>
+        <div className="flex-1 flex flex-col">
+          <Routes>
+            <Route path="/" element={<Homepage/>}/>
+            <Route path="/room" element={<Room/>}/>
+            <Route path="/sender" element= {<Sender/>}/>
+            <Route path="/receiver" element= {<Receiver/>}/>
+          </Routes>
+        </div>
+        <Footer/>
+        </div>
+      </RecoilRoot>
     </BrowserRouter>
    </div>
   )
