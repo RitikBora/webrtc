@@ -62,8 +62,7 @@ export function Homepage() {
 
     }
     return (
-        <div className="flex flex-col " >
-        <AppBar/>
+      
       <main className="flex-grow">
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
           <motion.div
@@ -91,6 +90,7 @@ export function Homepage() {
                  <Button 
                     className="inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-lg font-medium shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50" 
                     style={{ backgroundColor: "#f582ae", color: "#001858" }}
+                    onClick={createRoom}
                   >
                     <Video style={{ width: "1.5rem", height: "1.5rem" }} className="pt-0.5" />
                     Create Meeting
@@ -106,6 +106,7 @@ export function Homepage() {
                     variant="outline" 
                     className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 px-4 py-2 text-lg font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50" 
                     style={{ borderColor: "#f582ae", color: "#001858" }}
+                  
                   >
                     <UserPlus style={{ width: "1.5rem", height: "1.5rem" }} className="pt-0.5" />
                     Join Meeting
@@ -119,7 +120,5 @@ export function Homepage() {
           <HeroSection/>
         </section>
       </main>
-      <Footer/>
-    </div>
     );
 }
