@@ -4,13 +4,14 @@ import { Input } from "@/components/ui/input"
 import { Mic, MicOff, Video, VideoOff, PhoneOff, Copy} from 'lucide-react'
 import { Receiver } from './Receiver';
 import {useRecoilValue } from 'recoil';
-import {isMutedAtom , IsVideoOnAtom} from '../../../recoil/atoms'
+import {IsMutedAtom , IsVideoOnAtom} from '../../../recoil/atoms'
 import { MediaControls } from './MediaControls';
+import { EndCallPopup } from './EndCallPopup';
 
 
 export const Room = () => {
 
-  const isMuted = useRecoilValue(isMutedAtom);
+  const isMuted = useRecoilValue(IsMutedAtom);
   const isVideoOn  = useRecoilValue(IsVideoOnAtom);
   const [roomId, setRoomId] = useState(''); 
 
@@ -50,6 +51,7 @@ export const Room = () => {
         <Receiver roomId={roomId}/>
       </main>
       <MediaControls/>
+      <EndCallPopup/>
     </div>
   );
 };
