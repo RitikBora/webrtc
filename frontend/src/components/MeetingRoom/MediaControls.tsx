@@ -1,11 +1,11 @@
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { IsCallEnded, IsMutedAtom, IsVideoOnAtom } from "../../../recoil/atoms";
+import { IsCallEnded, IsMicOnAtom, IsVideoOnAtom } from "../../../recoil/atoms";
 import { Button } from "../ui/button";
 import { Mic, MicOff, PhoneOff, Video, VideoOff } from "lucide-react";
 
 export const MediaControls = () =>
 {
-    const [isMuted, setIsMuted] = useRecoilState(IsMutedAtom);
+    const [isMicOn , setIsMicOn] = useRecoilState(IsMicOnAtom);
     const [isVideoOn, setIsVideoOn] = useRecoilState(IsVideoOnAtom);
     const setIsCallEnded = useSetRecoilState(IsCallEnded); 
 
@@ -15,10 +15,10 @@ export const MediaControls = () =>
             <Button
                 variant="outline"
                 size="icon"
-                onClick={() => setIsMuted(!isMuted)}
+                onClick={() => setIsMicOn(!isMicOn)}
                 className="bg-[#f582ae] text-[#001858] hover:bg-[#f582ae]/80 hover:text-[#001858] border-[#001858]"
             >
-                {isMuted ? <MicOff className="h-6 w-6" /> : <Mic className="h-6 w-6" />}
+                {!isMicOn? <MicOff className="h-6 w-6" /> : <Mic className="h-6 w-6" />}
             </Button>
             <Button
                 variant="outline"

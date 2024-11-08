@@ -1,14 +1,14 @@
 import { atom } from "recoil";
 
-const IsMutedAtom = atom({
-    key: "IsMutedAtom",
-    default: false
+const IsMicOnAtom = atom({
+    key: "IsMicOnAtom",
+    default: true
     }
 )
 
 const IsVideoOnAtom = atom({
     key: "IsVideoOnAtom",
-    default: false
+    default: true
     }
 )
 
@@ -17,4 +17,4 @@ const IsCallEnded = atom({
     default: false
 })
 
-export {IsMutedAtom , IsVideoOnAtom , IsCallEnded};
+export {IsMicOnAtom , IsVideoOnAtom , IsCallEnded};
