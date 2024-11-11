@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Copy } from "lucide-react";
@@ -7,9 +7,9 @@ import { toast } from "react-toastify";
 
 
 
-export const Receiver = ({roomId} : {roomId : string}) =>
+export const Receiver = ({roomId , isPeerConnected , peerVideoRef} : {roomId : string , isPeerConnected: boolean , peerVideoRef: React.RefObject<HTMLVideoElement>}) =>
 {
-   const [isPeerConnected, setIsPeerConnected] = useState(false);
+
 
     const copyRoomId = () => {
     navigator.clipboard.writeText(roomId);
@@ -29,10 +29,11 @@ export const Receiver = ({roomId} : {roomId : string}) =>
           {isPeerConnected ? (
             <div className="relative h-full">
               <video
-                className="w-full h-full object-cover"
+                className="w-full h-96 object-cover"
                 src="/placeholder.svg?height=720&width=1280"
                 autoPlay
                 playsInline
+                ref={peerVideoRef}
               />
               <div className="absolute bottom-4 left-4 bg-[#f582ae] text-[#001858] px-2 py-1 rounded">
                 Peer

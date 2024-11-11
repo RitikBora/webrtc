@@ -6,6 +6,9 @@ import { MediaControls } from './MediaControls';
 import { EndCallPopup } from './EndCallPopup';
 import { Bounce, toast } from 'react-toastify';
 import {shareMedia} from "../../../utils/videoUtils"
+import { Button } from '../ui/button';
+import { Copy } from 'lucide-react';
+import { Input } from '../ui/input';
 
 
 export const Room = () => {
@@ -17,6 +20,7 @@ export const Room = () => {
   const [pc , setPC] = useState<RTCPeerConnection | null>(null);
   const peerVideoRef = useRef<HTMLVideoElement>(null);
   const selfVideoRef = useRef<HTMLVideoElement>(null);
+  const [isPeerConnected, setIsPeerConnected] = useState(false);
 
 
 
@@ -36,6 +40,13 @@ export const Room = () => {
       const socket = new WebSocket("ws://localhost:8082")
       const pc = new RTCPeerConnection();
       setPC(pc);
+
+
+const urlParams = new URLSearchParams(window.location.search);
+      const roomId = urlParams.get("roomId");
+      if(roomId)
+        setRoomId(roomId);
+         
 
       socket.onopen = () =>
       {
@@ -62,15 +73,27 @@ export const Room = () => {
         
         pc.ontrack = (event) =>
         {
-            if (peerVideoRef.current) {
-            peerVideoRef.current.srcObject = new MediaStream([event.track]);
-            peerVideoRef.current.muted = true;
-            peerVideoRef.current.play();
-            }
+         setIsPeerConnected(true);
+            
+            
+               setIsPeerConnected(true);
+               setTimeout(() =>{
+                console.log("11111111111")
+                if (peerVideoRef.current) {
+                  
+                  console.log("yess");
+                   peerVideoRef.current.srcObject = new MediaStream([event.track]);
+                peerVideoRef.current.muted = true;
+                peerVideoRef.current.play();
+                }
+               } , 1000)
+           
+            
         }
 
           socket.onmessage = async (event) =>
         {
+        
             const data = JSON.parse(event.data);
             switch(data.type)
             {
@@ -82,17 +105,6 @@ export const Room = () => {
                 
                 case "roomCreated" :
                 {
-                    toast.info('Share URL with the receiver', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                    transition: Bounce,
-                    });
                     break;
                 }
 
@@ -114,16 +126,29 @@ export const Room = () => {
         };
 
 
-  } , [])
+  } , []);
+
+
  
 
  useEffect(() =>
  {
     shareMedia(selfVideoRef , pc , isVideoOn , isMicOn);
- } , [isVideoOn , isMicOn]);
+ } , [isVideoOn , isMicOn , pc]);
 
 
-
+ const copyRoomId = () => {
+    navigator.clipboard.writeText(roomId);
+    toast.success('Room ID Copied!', {
+        position:"top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        theme: "light",
+        });
+  };
 
  
   return (
@@ -147,7 +172,7 @@ export const Room = () => {
             </div>
           </div>
         </div>
-        <Receiver roomId={roomId}/>
+        <Receiver roomId={roomId} peerVideoRef={peerVideoRef} isPeerConnected={isPeerConnected}/>
       </main>
       <MediaControls selfVideoRef={selfVideoRef}/>
       <EndCallPopup/>
