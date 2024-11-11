@@ -149,7 +149,7 @@ export const Room = () => {
         </div>
         <Receiver roomId={roomId}/>
       </main>
-      <MediaControls/>
+      <MediaControls selfVideoRef={selfVideoRef}/>
       <EndCallPopup/>
     </div>
   );

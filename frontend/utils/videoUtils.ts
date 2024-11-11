@@ -7,89 +7,54 @@ export function shareMedia(
     isMicOn: boolean
 ) {
     if (selfVideoRef.current && selfVideoRef.current.srcObject) {
-        modifyExistingMediaStream(selfVideoRef.current.srcObject as MediaStream, selfVideoRef , isVideoOn, isMicOn, pc);
+        // Close the existing stream and start a new one
+        modifyExistingMediaStream(selfVideoRef.current.srcObject as MediaStream, selfVideoRef, isVideoOn, isMicOn, pc);
     } else {
+        // If there's no stream yet, create a new one
         createMediaStream(selfVideoRef, pc, isVideoOn, isMicOn);
     }
-
 }
 
-const modifyExistingMediaStream = (existingStream: MediaStream , selfVideoRef:React.RefObject<HTMLVideoElement> , isVideoOn: boolean, isMicOn: boolean, pc: RTCPeerConnection | null) => {
-    const videoTrack = existingStream.getVideoTracks()[0];
-    const audioTrack = existingStream.getAudioTracks()[0];
+const modifyExistingMediaStream = (
+    existingStream: MediaStream,
+    selfVideoRef: React.RefObject<HTMLVideoElement>,
+    isVideoOn: boolean,
+    isMicOn: boolean,
+    pc: RTCPeerConnection | null
+) => {
+    // Close and stop the existing stream
+    closeMediaStream(existingStream);
 
-  
-
-    // Stop video track if video is turned off
-    if (videoTrack && !isVideoOn) {
-        videoTrack.stop();
-        existingStream.removeTrack(videoTrack);
-    }
-
-    // Start video if not already started
-    if (!videoTrack && isVideoOn) {
-        navigator.mediaDevices.getUserMedia({ video: true, audio: isMicOn })
-            .then((newStream) => {
-                const newVideoTrack = newStream.getVideoTracks()[0];
-                existingStream.addTrack(newVideoTrack);
-                 if (selfVideoRef.current) {
-                selfVideoRef.current.srcObject = existingStream;
-                selfVideoRef.current.muted = true;
-                selfVideoRef.current.play();
-            }
-
-                // Add the video track to the peer connection if necessary
-                pc?.addTrack(newVideoTrack, newStream);
-            })
-            .catch((err) => console.error('Error accessing video:', err));
-    }
-
-    // Stop audio track if mic is turned off
-    if (audioTrack && !isMicOn) {
-        audioTrack.stop();
-        existingStream.removeTrack(audioTrack);
-    }
-
-    // Start audio if not already started
-    if (!audioTrack && isMicOn) {
-        navigator.mediaDevices.getUserMedia({ video: isVideoOn, audio: true })
-            .then((newStream) => {
-                const newAudioTrack = newStream.getAudioTracks()[0];
-                existingStream.addTrack(newAudioTrack);
-            
-                // Add the audio track to the peer connection if necessary
-                pc?.addTrack(newAudioTrack, newStream);
-            })
-            .catch((err) => console.error('Error accessing audio:', err));
-    }
-
-    // If both video and mic are off, stop all tracks
-    if (!isMicOn && !isVideoOn) {
-        closeMediaStream(existingStream);
-    }
+    // Create and attach a new media stream
+    createMediaStream(selfVideoRef, pc, isVideoOn, isMicOn);
 };
 
-const createMediaStream = (selfVideoRef: React.RefObject<HTMLVideoElement>, pc: RTCPeerConnection | null, isVideoOn: boolean, isMicOn: boolean) => {
+const createMediaStream = (
+    selfVideoRef: React.RefObject<HTMLVideoElement>,
+    pc: RTCPeerConnection | null,
+    isVideoOn: boolean,
+    isMicOn: boolean
+) => {
     navigator.mediaDevices
         .getUserMedia({ video: isVideoOn, audio: isMicOn })
-        .then((stream) => {
+        .then((newStream) => {
+            // Set the new stream to the video element
             if (selfVideoRef.current) {
-                selfVideoRef.current.srcObject = stream;
+                selfVideoRef.current.srcObject = newStream;
                 selfVideoRef.current.muted = true;
-                selfVideoRef.current.play();
+                selfVideoRef.current.play(); // Ensure video plays
             }
 
-            stream.getTracks().forEach((track) => {
-                // Add the tracks to the peer connection if necessary
-                // pc?.addTrack(track, stream);
+            // Add the new tracks to the peer connection
+            newStream.getTracks().forEach((track) => {
+                pc?.addTrack(track, newStream);
             });
-
         })
         .catch((err) => {
             console.error('Error accessing media devices:', err);
         });
 };
 
-const closeMediaStream = (existingStream: MediaStream) => {
-    existingStream.getTracks().forEach((track) => track.stop());
+export const closeMediaStream = (existingStream: MediaStream) => {
+    existingStream.getTracks().forEach((track) => track.stop()); // Stop all tracks
 };

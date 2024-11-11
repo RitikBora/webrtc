@@ -2,8 +2,9 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { IsCallEnded, IsMicOnAtom, IsVideoOnAtom } from "../../../recoil/atoms";
 import { Button } from "../ui/button";
 import { Mic, MicOff, PhoneOff, Video, VideoOff } from "lucide-react";
+import { closeMediaStream } from "../../../utils/videoUtils";
 
-export const MediaControls = () =>
+export const MediaControls = ({selfVideoRef} : {selfVideoRef :React.RefObject<HTMLVideoElement>}) =>
 {
     const [isMicOn , setIsMicOn] = useRecoilState(IsMicOnAtom);
     const [isVideoOn, setIsVideoOn] = useRecoilState(IsVideoOnAtom);
@@ -32,7 +33,13 @@ export const MediaControls = () =>
                 variant="outline"
                 size="icon"
                 className="bg-[#f582ae] text-[#001858] hover:bg-[#f582ae]/80 hover:text-[#001858] border-[#001858]"
-                onClick={() => setIsCallEnded(true)}
+                onClick={() => {
+                    if(selfVideoRef.current?.srcObject)
+                    {
+                        closeMediaStream(selfVideoRef.current.srcObject as MediaStream);
+                    }
+                    setIsCallEnded(true)
+                }}
             >
                 <PhoneOff className="h-6 w-6" />
             </Button>
