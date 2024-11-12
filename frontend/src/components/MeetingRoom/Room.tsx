@@ -4,18 +4,15 @@ import {useRecoilValue } from 'recoil';
 import {IsMicOnAtom , IsVideoOnAtom} from '../../../recoil/atoms'
 import { MediaControls } from './MediaControls';
 import { EndCallPopup } from './EndCallPopup';
-import { Bounce, toast } from 'react-toastify';
 import {shareMedia} from "../../../utils/videoUtils"
-import { Button } from '../ui/button';
-import { Copy } from 'lucide-react';
-import { Input } from '../ui/input';
+
 
 
 export const Room = () => {
 
   const isMicOn = useRecoilValue(IsMicOnAtom);
   const isVideoOn  = useRecoilValue(IsVideoOnAtom);
-  const [roomId, setRoomId] = useState(''); 
+
 
   const [pc , setPC] = useState<RTCPeerConnection | null>(null);
   const peerVideoRef = useRef<HTMLVideoElement>(null);
@@ -24,14 +21,6 @@ export const Room = () => {
 
 
 
-  useEffect(() =>
-  {
-      const urlParams = new URLSearchParams(window.location.search);
-      const roomId = urlParams.get("roomId");
-      if(roomId)
-        setRoomId(roomId);
-         
-  } , [])
 
 
   useEffect(() =>
@@ -44,10 +33,7 @@ export const Room = () => {
 
 const urlParams = new URLSearchParams(window.location.search);
       const roomId = urlParams.get("roomId");
-      if(roomId)
-        setRoomId(roomId);
-         
-
+  
       socket.onopen = () =>
       {
           socket.send(JSON.stringify({roomId : roomId , type : "connect"}));
@@ -73,20 +59,14 @@ const urlParams = new URLSearchParams(window.location.search);
         
         pc.ontrack = (event) =>
         {
-         setIsPeerConnected(true);
-            
-            
-               setIsPeerConnected(true);
-               setTimeout(() =>{
-                console.log("11111111111")
-                if (peerVideoRef.current) {
-                  
-                  console.log("yess");
-                   peerVideoRef.current.srcObject = new MediaStream([event.track]);
-                peerVideoRef.current.muted = true;
-                peerVideoRef.current.play();
-                }
-               } , 1000)
+          setIsPeerConnected(true);
+          setTimeout(() =>{
+            if (peerVideoRef.current) {
+              peerVideoRef.current.srcObject = new MediaStream([event.track]);
+              peerVideoRef.current.muted = true;
+              peerVideoRef.current.play();
+            }
+          } , 500)
            
             
         }
@@ -137,19 +117,6 @@ const urlParams = new URLSearchParams(window.location.search);
  } , [isVideoOn , isMicOn , pc]);
 
 
- const copyRoomId = () => {
-    navigator.clipboard.writeText(roomId);
-    toast.success('Room ID Copied!', {
-        position:"top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        theme: "light",
-        });
-  };
-
  
   return (
    <div className='flex-1  pt-16'>
@@ -172,7 +139,7 @@ const urlParams = new URLSearchParams(window.location.search);
             </div>
           </div>
         </div>
-        <Receiver roomId={roomId} peerVideoRef={peerVideoRef} isPeerConnected={isPeerConnected}/>
+        <Receiver peerVideoRef={peerVideoRef} isPeerConnected={isPeerConnected}/>
       </main>
       <MediaControls selfVideoRef={selfVideoRef}/>
       <EndCallPopup/>
