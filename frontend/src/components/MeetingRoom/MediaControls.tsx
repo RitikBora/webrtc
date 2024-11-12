@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { Mic, MicOff, PhoneOff, Video, VideoOff } from "lucide-react";
 import { closeMediaStream } from "../../../utils/videoUtils";
 
-export const MediaControls = ({selfVideoRef} : {selfVideoRef :React.RefObject<HTMLVideoElement>}) =>
+export const MediaControls = ({selfVideoRef , peerVideoRef} : {selfVideoRef :React.RefObject<HTMLVideoElement>, peerVideoRef :React.RefObject<HTMLVideoElement>}) =>
 {
     const [isMicOn , setIsMicOn] = useRecoilState(IsMicOnAtom);
     const [isVideoOn, setIsVideoOn] = useRecoilState(IsVideoOnAtom);
@@ -37,6 +37,7 @@ export const MediaControls = ({selfVideoRef} : {selfVideoRef :React.RefObject<HT
                     if(selfVideoRef.current?.srcObject)
                     {
                         closeMediaStream(selfVideoRef.current.srcObject as MediaStream);
+                        closeMediaStream(peerVideoRef.current?.srcObject as  MediaStream)
                     }
                     setIsCallEnded(true)
                 }}
