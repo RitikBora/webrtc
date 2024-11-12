@@ -10,15 +10,15 @@ export const Footer = () =>
          
         </nav>
         <div className="flex gap-4 mt-4 sm:mt-0">
-          <Link to="#" style={{ color: "#001858" }}>
+          <Link to="https://github.com/RitikBora" style={{ color: "#001858" }} target="_blank">
             <Github className="h-5 w-5" />
             <span className="sr-only">GitHub</span>
           </Link>
-          <Link to="#" style={{ color: "#001858" }}>
+          <Link to="https://x.com/RitikBora11" style={{ color: "#001858" }} target="_blank"> 
             <Twitter className="h-5 w-5" />
             <span className="sr-only">Twitter</span>
           </Link>
-          <Link to="#" style={{ color: "#001858" }}>
+          <Link to="https://www.linkedin.com/in/ritikbora" style={{ color: "#001858" }} target="_blank">
             <Linkedin className="h-5 w-5" />
             <span className="sr-only">LinkedIn</span>
           </Link>
@@ -26,3 +26,5 @@ export const Footer = () =>
       </footer>
     )
 }
+
+

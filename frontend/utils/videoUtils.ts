@@ -5,13 +5,19 @@ export function shareMedia(
     pc: RTCPeerConnection | null,
     isVideoOn: boolean,
     isMicOn: boolean
-) {
+): Promise<MediaStream> {
     if (selfVideoRef.current && selfVideoRef.current.srcObject) {
-        // Close the existing stream and start a new one
-        modifyExistingMediaStream(selfVideoRef.current.srcObject as MediaStream, selfVideoRef, isVideoOn, isMicOn, pc);
+        // Modify the existing media stream and return it
+        return modifyExistingMediaStream(
+            selfVideoRef.current.srcObject as MediaStream,
+            selfVideoRef,
+            isVideoOn,
+            isMicOn,
+            pc
+        );
     } else {
-        // If there's no stream yet, create a new one
-        createMediaStream(selfVideoRef, pc, isVideoOn, isMicOn);
+        // Create a new media stream and return it
+        return createMediaStream(selfVideoRef, pc, isVideoOn, isMicOn);
     }
 }
 
@@ -21,12 +27,12 @@ const modifyExistingMediaStream = (
     isVideoOn: boolean,
     isMicOn: boolean,
     pc: RTCPeerConnection | null
-) => {
+): Promise<MediaStream> => {
     // Close and stop the existing stream
     closeMediaStream(existingStream);
 
-    // Create and attach a new media stream
-    createMediaStream(selfVideoRef, pc, isVideoOn, isMicOn);
+    // Create and return a new media stream
+    return createMediaStream(selfVideoRef, pc, isVideoOn, isMicOn);
 };
 
 const createMediaStream = (
@@ -34,8 +40,8 @@ const createMediaStream = (
     pc: RTCPeerConnection | null,
     isVideoOn: boolean,
     isMicOn: boolean
-) => {
-    navigator.mediaDevices
+): Promise<MediaStream> => {
+    return navigator.mediaDevices
         .getUserMedia({ video: isVideoOn, audio: isMicOn })
         .then((newStream) => {
             // Set the new stream to the video element
@@ -49,9 +55,13 @@ const createMediaStream = (
             newStream.getTracks().forEach((track) => {
                 pc?.addTrack(track, newStream);
             });
+
+            // Return the new media stream
+            return newStream;
         })
         .catch((err) => {
             console.error('Error accessing media devices:', err);
+            throw err; // Re-throw error for better handling
         });
 };
 

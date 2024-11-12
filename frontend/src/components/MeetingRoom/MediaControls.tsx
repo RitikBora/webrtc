@@ -37,7 +37,10 @@ export const MediaControls = ({selfVideoRef , peerVideoRef} : {selfVideoRef :Rea
                     if(selfVideoRef.current?.srcObject)
                     {
                         closeMediaStream(selfVideoRef.current.srcObject as MediaStream);
-                        closeMediaStream(peerVideoRef.current?.srcObject as  MediaStream)
+                    }
+                    if(peerVideoRef.current?.srcObject)
+                    {
+                        closeMediaStream(peerVideoRef.current.srcObject as MediaStream);
                     }
                     setIsCallEnded(true)
                 }}

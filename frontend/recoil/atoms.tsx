@@ -17,4 +17,10 @@ const IsCallEnded = atom({
     default: false
 })
 
-export {IsMicOnAtom , IsVideoOnAtom , IsCallEnded};
+const VideoRefAtom = atom<MediaStream | null>({
+    key: "VideoRefAtom",
+    default: null
+
+})
+
+export {IsMicOnAtom , IsVideoOnAtom , IsCallEnded , VideoRefAtom};
