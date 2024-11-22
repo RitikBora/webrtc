@@ -11,9 +11,8 @@ import {
 } from "./ui/dialog";
 import { Video, UserPlus } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Footer } from "./Footer";
+
 import { HeroSection } from "./Hero";
-import { AppBar } from "./Appbar";
 
 const containerVariants = {
   hidden: { opacity: 0 },

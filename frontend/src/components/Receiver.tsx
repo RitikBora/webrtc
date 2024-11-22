@@ -1,5 +1,5 @@
 
-import { UserTemplate } from "./UserTemplate"
+
 
 export function Receiver() {
     return (

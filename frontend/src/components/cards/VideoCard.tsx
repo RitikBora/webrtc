@@ -4,7 +4,7 @@ type VideoCardProps = {
     type : "sender" | "reciever",
     reference : RefObject<HTMLVideoElement> | null,
 }
-export function VideoCard({type , reference } : VideoCardProps) {
+export function VideoCard({reference } : VideoCardProps) {
 
     
    return (
