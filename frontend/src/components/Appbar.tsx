@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { useRecoilValue } from "recoil"
 import { VideoRefAtom } from "../../recoil/atoms"
 import { closeMediaStream } from "../../utils/videoUtils"
+import { ModeToggle } from "./mode-toggle"
 
 
 export const AppBar = () => {
@@ -31,6 +32,7 @@ export const AppBar = () => {
           </Link>
         </div>
 
+        <ModeToggle />
       </div>
     </header>
   )

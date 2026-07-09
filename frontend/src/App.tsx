@@ -8,12 +8,14 @@ import { ToastContainer } from "react-toastify"
 
 import "react-toastify/dist/ReactToastify.css";
 import { RecoilRoot } from "recoil"
+import { ThemeProvider } from "./components/theme-provider"
 
 
 function App() {
 
 
   return (
+   <ThemeProvider defaultTheme="system" storageKey="meetwise-ui-theme">
    <div className="bg-background">
 
     <BrowserRouter>
@@ -32,6 +34,7 @@ function App() {
       </RecoilRoot>
     </BrowserRouter>
    </div>
+   </ThemeProvider>
   )
 }
 

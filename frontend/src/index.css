@@ -145,3 +145,27 @@
     letter-spacing: -0.02em;
   }
 }
+
+/* ===================================================================
+   Theme-switch motion — animates the light/dark swap via the View
+   Transitions API (see theme-provider.tsx). Timing borrows the design
+   system's own soft "ease-smooth" so the swap feels native to the
+   brand rather than a bolted-on default.
+   =================================================================== */
+::view-transition-old(root) {
+  animation: meetwise-theme-out var(--dur-slower) var(--ease-smooth) forwards;
+}
+
+::view-transition-new(root) {
+  animation: meetwise-theme-in var(--dur-slower) var(--ease-smooth) forwards;
+}
+
+@keyframes meetwise-theme-out {
+  from { clip-path: inset(0 0 0 0); }
+  to   { clip-path: inset(100% 0 0 0); }
+}
+
+@keyframes meetwise-theme-in {
+  from { clip-path: inset(0 0 100% 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
