@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react"
 
 type Theme = "dark" | "light" | "system"
+type ResolvedTheme = "light" | "dark"
 
 type ThemeProviderProps = {
   children: React.ReactNode
@@ -10,15 +11,30 @@ type ThemeProviderProps = {
 
 type ThemeProviderState = {
   theme: Theme
+  resolvedTheme: ResolvedTheme
   setTheme: (theme: Theme) => void
 }
 
 const initialState: ThemeProviderState = {
   theme: "system",
+  resolvedTheme: "light",
   setTheme: () => null,
 }
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
+
+function resolveTheme(theme: Theme): ResolvedTheme {
+  if (theme === "system") {
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+  }
+  return theme
+}
+
+function applyThemeClass(resolved: ResolvedTheme) {
+  const root = window.document.documentElement
+  root.classList.remove("light", "dark")
+  root.classList.add(resolved)
+}
 
 export function ThemeProvider({
   children,
@@ -27,51 +43,39 @@ export function ThemeProvider({
   ...props
 }: ThemeProviderProps) {
 
-  const [theme, setTheme] = useState<Theme>(
+  const [theme, setThemeState] = useState<Theme>(
     () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
   )
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(() => resolveTheme(theme))
 
   useEffect(() => {
-    const root = window.document.documentElement
-
-    const applyTheme = (themeToApply: "light" | "dark") => {
-      root.classList.remove("light", "dark")
-      root.classList.add(themeToApply)
-    }
-
-    const newTheme =
-      theme === "system"
-        ? window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light"
-        : theme
-
-    // Animate the swap with the View Transitions API when available -
-    // falls back to an instant class swap in unsupported browsers.
-    if (document.startViewTransition) {
-      document.startViewTransition(() => applyTheme(newTheme))
-    } else {
-      applyTheme(newTheme)
-    }
+    const resolved = resolveTheme(theme)
+    applyThemeClass(resolved)
+    setResolvedTheme(resolved)
   }, [theme])
 
   useEffect(() => {
     if (theme !== "system") return
     const media = window.matchMedia("(prefers-color-scheme: dark)")
     const listener = () => {
-      const root = window.document.documentElement
-      root.classList.remove("light", "dark")
-      root.classList.add(media.matches ? "dark" : "light")
+      const resolved = media.matches ? "dark" : "light"
+      applyThemeClass(resolved)
+      setResolvedTheme(resolved)
     }
     media.addEventListener("change", listener)
     return () => media.removeEventListener("change", listener)
   }, [theme])
 
-  const value = {
+  const value: ThemeProviderState = {
     theme,
-    setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme)
-      setTheme(theme)
+    resolvedTheme,
+    setTheme: (nextTheme: Theme) => {
+      localStorage.setItem(storageKey, nextTheme)
+      // Apply synchronously (not just via the effect above) so callers that
+      // wrap this in flushSync — to drive the View Transitions circular
+      // reveal from a click point — see the DOM update immediately.
+      applyThemeClass(resolveTheme(nextTheme))
+      setThemeState(nextTheme)
     },
   }
 

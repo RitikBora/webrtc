@@ -37,9 +37,35 @@
     /* ---- ink neutrals (raw, used directly for the dark video canvas) ---- */
     --ink-0: #FFFFFF;
     --ink-50: #F5F4FA;
+    --ink-100: #EAE8F3;
+    --ink-200: #D4D1E4;
+    --ink-300: #ABA6C4;
+    --ink-400: #837CA3;
+    --ink-500: #615A85;
+    --ink-600: #46405F;
+    --ink-700: #2E2C3F;
     --ink-800: #211F2E;
     --ink-900: #16151F;
     --ink-950: #0D0C13;
+
+    /* ---- violet (brand primitives, used directly for marketing surfaces) ---- */
+    --violet-50: #EFEBFE;
+    --violet-100: #E1D9FD;
+    --violet-200: #C7B9FB;
+    --violet-300: #9B8AFB;
+    --violet-400: #8069F9;
+    --violet-500: #6F51F7;
+    --violet-600: #5B3DF5;
+    --violet-700: #4A2CDC;
+    --violet-800: #3B22AD;
+    --violet-900: #2C1B7D;
+
+    /* ---- green (raw "connected" primitives) ---- */
+    --green-100: #D3F7EC;
+    --green-300: #7EEBCB;
+    --green-500: #2ED9A3;
+    --green-600: #22B588;
+    --green-700: #178A69;
 
     /* ---- accent tint (chips, selected states) ---- */
     --accent-tint: #EFEBFE;
@@ -89,7 +115,7 @@
   }
 
   .dark {
-    --background: 246 19% 10%;
+    --background: 249 23% 6%;
     --foreground: 0 0% 100%;
     --card: 248 19% 15%;
     --card-foreground: 0 0% 100%;
@@ -99,7 +125,7 @@
     --primary-foreground: 0 0% 100%;
     --secondary: 246 18% 21%;
     --secondary-foreground: 0 0% 100%;
-    --muted: 249 23% 6%;
+    --muted: 246 19% 10%;
     --muted-foreground: 250 20% 71%;
     --accent: 250 25% 19%;
     --accent-foreground: 249 93% 76%;
@@ -147,25 +173,50 @@
 }
 
 /* ===================================================================
-   Theme-switch motion — animates the light/dark swap via the View
-   Transitions API (see theme-provider.tsx). Timing borrows the design
-   system's own soft "ease-smooth" so the swap feels native to the
-   brand rather than a bolted-on default.
+   Theme-switch motion — a circular reveal expanding from the toggle
+   button's click point (see mode-toggle.tsx, which drives the actual
+   clip-path keyframes via the Web Animations API). This CSS only turns
+   off the browser's default cross-fade and stacks the new snapshot on
+   top, so the JS-driven circle is the only motion that shows.
    =================================================================== */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
 ::view-transition-old(root) {
-  animation: meetwise-theme-out var(--dur-slower) var(--ease-smooth) forwards;
+  z-index: 1;
 }
 
 ::view-transition-new(root) {
-  animation: meetwise-theme-in var(--dur-slower) var(--ease-smooth) forwards;
+  z-index: 2;
 }
 
-@keyframes meetwise-theme-out {
-  from { clip-path: inset(0 0 0 0); }
-  to   { clip-path: inset(100% 0 0 0); }
+/* ===================================================================
+   Marketing landing page — floating mockup, live dot, character tiles.
+   =================================================================== */
+@keyframes mwFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
 }
 
-@keyframes meetwise-theme-in {
-  from { clip-path: inset(0 0 100% 0); }
-  to   { clip-path: inset(0 0 0 0); }
+@keyframes mwDot {
+  0%, 100% { opacity: .3; transform: scale(.7); }
+  50%      { opacity: 1; transform: scale(1); }
+}
+
+@keyframes mwBob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-5px); }
+}
+
+@keyframes mwBlink {
+  0%, 90%, 100% { transform: scaleY(1); }
+  95%           { transform: scaleY(.08); }
+}
+
+@keyframes mwSpeak {
+  0%, 74%, 100% { opacity: 0; }
+  82%, 94%      { opacity: 1; }
 }

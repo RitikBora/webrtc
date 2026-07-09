@@ -75,9 +75,35 @@ export default {
   			ink: {
   				0: 'var(--ink-0)',
   				50: 'var(--ink-50)',
+  				100: 'var(--ink-100)',
+  				200: 'var(--ink-200)',
+  				300: 'var(--ink-300)',
+  				400: 'var(--ink-400)',
+  				500: 'var(--ink-500)',
+  				600: 'var(--ink-600)',
+  				700: 'var(--ink-700)',
   				800: 'var(--ink-800)',
   				900: 'var(--ink-900)',
   				950: 'var(--ink-950)'
+  			},
+  			violet: {
+  				50: 'var(--violet-50)',
+  				100: 'var(--violet-100)',
+  				200: 'var(--violet-200)',
+  				300: 'var(--violet-300)',
+  				400: 'var(--violet-400)',
+  				500: 'var(--violet-500)',
+  				600: 'var(--violet-600)',
+  				700: 'var(--violet-700)',
+  				800: 'var(--violet-800)',
+  				900: 'var(--violet-900)'
+  			},
+  			green: {
+  				100: 'var(--green-100)',
+  				300: 'var(--green-300)',
+  				500: 'var(--green-500)',
+  				600: 'var(--green-600)',
+  				700: 'var(--green-700)'
   			},
   			connected: {
   				DEFAULT: 'var(--status-connected)',

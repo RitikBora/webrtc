@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom"
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom"
 import { Homepage } from "./components/Homepage"
 // import { Room } from "./components/Room"
 import { AppBar } from "./components/Appbar"
@@ -9,7 +9,25 @@ import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css";
 import { RecoilRoot } from "recoil"
 import { ThemeProvider } from "./components/theme-provider"
+import { RoomActionsProvider } from "./context/RoomActionsContext"
 
+function AppShell() {
+  const location = useLocation();
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      <AppBar/>
+      <ToastContainer/>
+      <div className="flex-1 flex flex-col">
+        <Routes>
+          <Route path="/" element={<Homepage/>}/>
+          <Route path="/room" element={<Room/>}/>
+        </Routes>
+      </div>
+      {location.pathname === "/" && <Footer/>}
+    </div>
+  )
+}
 
 function App() {
 
@@ -20,17 +38,9 @@ function App() {
 
     <BrowserRouter>
       <RecoilRoot>
-        <div className="flex flex-col min-h-screen">
-        <AppBar/>
-        <ToastContainer/>
-        <div className="flex-1 flex flex-col">
-          <Routes>
-            <Route path="/" element={<Homepage/>}/>
-            <Route path="/room" element={<Room/>}/>
-          </Routes>
-        </div>
-        <Footer/>
-        </div>
+        <RoomActionsProvider>
+          <AppShell/>
+        </RoomActionsProvider>
       </RecoilRoot>
     </BrowserRouter>
    </div>
