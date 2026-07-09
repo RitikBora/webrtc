@@ -6,6 +6,7 @@ import { MediaControls } from './MediaControls';
 import { EndCallPopup } from './EndCallPopup';
 import {shareMedia} from "../../../utils/videoUtils"
 import {motion} from 'framer-motion'
+import { ParticipantTile } from '../video/ParticipantTile';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -45,7 +46,7 @@ export const Room = () => {
 
 const urlParams = new URLSearchParams(window.location.search);
       const roomId = urlParams.get("roomId");
-  
+
       socket.onopen = () =>
       {
           socket.send(JSON.stringify({roomId : roomId , type : "connect"}));
@@ -68,7 +69,7 @@ const urlParams = new URLSearchParams(window.location.search);
                 }));
             }
         }
-        
+
         pc.ontrack = (event) =>
         {
           setIsPeerConnected(true);
@@ -79,22 +80,22 @@ const urlParams = new URLSearchParams(window.location.search);
               peerVideoRef.current.play();
             }
           } , 500)
-           
-            
+
+
         }
 
           socket.onmessage = async (event) =>
         {
-        
+
             const data = JSON.parse(event.data);
             switch(data.type)
             {
-                
+
                 case "createAnswer": {
                     const answer = data.sdp;
                     await pc.setRemoteDescription(answer);
                     break;}
-                
+
                 case "roomCreated" :
                 {
                     break;
@@ -105,7 +106,7 @@ const urlParams = new URLSearchParams(window.location.search);
                     break;
                  case "createOffer":{
                     pc.setRemoteDescription(data.sdp);
-                    const answer = await pc.createAnswer(); 
+                    const answer = await pc.createAnswer();
                     pc.setLocalDescription(answer);
                     socket.send(JSON.stringify({type : "createAnswer" , sdp : answer , roomId : roomId}));
                     break;
@@ -121,11 +122,11 @@ const urlParams = new URLSearchParams(window.location.search);
   } , []);
 
 
- 
+
 
  useEffect(() =>
  {
-    init();  
+    init();
  } , [isVideoOn , isMicOn , pc]);
 
  const init = async() =>
@@ -142,37 +143,26 @@ const urlParams = new URLSearchParams(window.location.search);
 
 
 
- 
   return (
-   <motion.div className='flex-1  pt-16'
-    variants={containerVariants}
-    initial="hidden"
-    animate="visible"
-   >
-      <main className="flex-grow flex flex-col md:flex-row p-4 gap-8">
-        <div className="flex-1 bg-[#f3d2c1] rounded-lg overflow-hidden shadow-lg min-h-96">
-          <div className="relative h-full">
-            <video
-              className={`w-full h-96 object-cover ${isVideoOn ? '' : 'hidden'}`}
-              ref={selfVideoRef}
-              autoPlay
-              playsInline
-            />
-            {!isVideoOn && (
-              <div className="absolute inset-0 flex items-center justify-center bg-[#8bd3dd]">
-                <span className="text-[#001858] font-bold">Video Off</span>
-              </div>
-            )}
-            <div className="absolute bottom-4 left-4 bg-[#f582ae] text-[#001858] px-2 py-1 rounded">
-              You
-            </div>
-          </div>
-        </div>
+   <div className="dark flex-1 bg-ink-950">
+    <motion.div className='relative flex-1 pt-16 min-h-[calc(100vh-4rem)] flex flex-col'
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <main className="flex-1 grid grid-cols-1 content-center gap-4 p-4 pb-28 md:grid-cols-2 md:gap-6 md:p-6 md:pb-32">
+        <ParticipantTile name="You" videoOn={isVideoOn} muted={!isMicOn}>
+          <video
+            ref={selfVideoRef}
+            autoPlay
+            playsInline
+          />
+        </ParticipantTile>
         <Receiver peerVideoRef={peerVideoRef} isPeerConnected={isPeerConnected}/>
       </main>
       <MediaControls selfVideoRef={selfVideoRef} peerVideoRef={peerVideoRef}/>
       <EndCallPopup/>
     </motion.div>
+   </div>
   );
 };
-

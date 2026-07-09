@@ -1,38 +1,47 @@
+import { ShieldCheck, Sparkles, Zap } from "lucide-react";
+import { Card } from "./ui/card";
+
+const features = [
+  {
+    icon: Sparkles,
+    title: "Crystal-clear quality",
+    description: "Enjoy HD audio and video that makes every interaction feel as if you're in the same room.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Secure and reliable",
+    description: "Feel confident with end-to-end encryption and robust security measures that keep your meetings private.",
+  },
+  {
+    icon: Zap,
+    title: "No lag, no delay",
+    description: "Experience seamless connectivity even on low-bandwidth networks, ensuring uninterrupted meetings.",
+  },
+];
+
 export const HeroSection = () => {
   return (
     <div className="container">
       <div className="flex flex-col items-center justify-center space-y-6 text-center">
         <div className="space-y-4">
-          <h2 className="text-3xl font-extrabold tracking-tight md:text-3xl lg:text-5xl" style={{ color: "#001858" }}>
-            Why Choose Our Platform?
+          <h2 className="font-display text-3xl font-extrabold tracking-tight text-foreground md:text-3xl lg:text-5xl">
+            Why choose our platform?
           </h2>
-          <p className="mx-auto max-w-[700px] text-lg md:text-xl lg:text-2xl md:py-6  lg:py-10" style={{ color: "#172c66" }}>
+          <p className="mx-auto max-w-[700px] font-body text-lg text-muted-foreground md:py-6 md:text-xl lg:py-10 lg:text-2xl">
             Experience meetings like never before with our state-of-the-art platform designed to keep your conversations clear, collaborative, and secure.
           </p>
         </div>
-        
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-[1000px] w-full">
-          <div className="space-y-3">
-            <h3 className="text-xl font-bold" style={{ color: "#001858" }}>Crystal-Clear Quality</h3>
-            <p className="text-gray-600 md:text-lg">
-              Enjoy HD audio and video that makes every interaction feel as if you're in the same room.
-            </p>
-          </div>
-          
-          <div className="space-y-3">
-            <h3 className="text-xl font-bold" style={{ color: "#001858" }}>Secure & Reliable</h3>
-            <p className="text-gray-600 md:text-lg">
-              Feel confident with end-to-end encryption and robust security measures that keep your meetings private.
-            </p>
-          </div>
 
-          <div className="space-y-3">
-            <h3 className="text-xl font-bold" style={{ color: "#001858" }}>No Lag, No Delay</h3>
-            <p className="text-gray-600 md:text-lg">
-              Experience seamless connectivity even on low-bandwidth networks, ensuring uninterrupted meetings.
-            </p>
-          </div>
-          
+        <div className="grid w-full max-w-[1000px] grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {features.map(({ icon: Icon, title, description }) => (
+            <Card key={title} className="text-left">
+              <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-sm bg-accent text-accent-foreground">
+                <Icon className="h-5 w-5" />
+              </div>
+              <h3 className="mb-2 font-display text-xl font-bold text-foreground">{title}</h3>
+              <p className="font-body text-muted-foreground">{description}</p>
+            </Card>
+          ))}
         </div>
       </div>
     </div>

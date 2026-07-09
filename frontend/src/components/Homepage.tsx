@@ -79,7 +79,7 @@ export function Homepage() {
   }
 
   return (
-    <main className="flex-grow">
+    <main className="flex-grow bg-background">
       <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
         <motion.div
           className="container px-4 md:px-6"
@@ -89,27 +89,23 @@ export function Homepage() {
         >
           <div className="flex flex-col items-center gap-4 space-y-4 text-center">
             <motion.div className="space-y-2" variants={itemVariants}>
-              <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none" style={{ color: "#001858" }}>
-                Connect Anywhere, Anytime
+              <h1 className="font-display text-3xl font-bold tracking-tighter text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
+                Connect anywhere, anytime
               </h1>
-              <p className="mx-auto max-w-[700px] text-lg sm:text-xl" style={{ color: "#172c66" }}>
+              <p className="mx-auto max-w-[700px] font-body text-lg text-muted-foreground sm:text-xl">
                 Your go-to platform for seamless video meetings. Create or join a meeting with just one click.
               </p>
             </motion.div>
-            <motion.div className="space-x-4" variants={itemVariants}>
+            <motion.div className="flex flex-wrap items-center justify-center gap-4" variants={itemVariants}>
               <motion.div
                 variants={buttonVariants}
                 whileHover="hover"
                 whileTap="tap"
                 className="inline-block"
               >
-                <Button 
-                  className="inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-lg font-medium shadow transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50" 
-                  style={{ backgroundColor: "#f582ae", color: "#001858" }}
-                  onClick={createRoom}
-                >
-                  <Video style={{ width: "1.5rem", height: "1.5rem" }} className="pt-0.5" />
-                  Create Meeting
+                <Button size="lg" onClick={createRoom}>
+                  <Video className="h-5 w-5" />
+                  Create meeting
                 </Button>
               </motion.div>
               <motion.div
@@ -118,43 +114,34 @@ export function Homepage() {
                 whileTap="tap"
                 className="inline-block"
               >
-                <Button 
-                  variant="outline" 
-                  className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 px-4 py-2 text-lg font-medium shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50" 
-                  style={{ borderColor: "#f582ae", color: "#001858" }}
-                  onClick={openJoinDialog}
-                >
-                  <UserPlus style={{ width: "1.5rem", height: "1.5rem" }} className="pt-0.5" />
-                  Join Meeting
+                <Button size="lg" variant="secondary" onClick={openJoinDialog}>
+                  <UserPlus className="h-5 w-5" />
+                  Join meeting
                 </Button>
               </motion.div>
             </motion.div>
           </div>
         </motion.div>
       </section>
-      <section className="w-full py-12 md:py-16 lg:py-20" style={{ backgroundColor: "#f3d2c1" }}>
+      <section className="w-full bg-muted py-12 md:py-16 lg:py-20">
         <HeroSection/>
       </section>
 
       <Dialog open={isJoinDialogOpen} onOpenChange={setIsJoinDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]" style={{ backgroundColor: "#fef6e4", color: "#001858" }}>
+        <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold">Join Meeting</DialogTitle>
+            <DialogTitle>Join meeting</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <Input
               id="roomId"
-              placeholder="Enter Room ID"
+              placeholder="Enter room ID"
               value={roomId}
               onChange={(e) => setRoomId(e.target.value)}
-              style={{ borderColor: "#f582ae", color: "#001858" }}
             />
           </div>
           <DialogFooter>
-            <Button
-              onClick={joinRoom}
-              style={{ backgroundColor: "#f582ae", color: "#001858" }}
-            >
+            <Button onClick={joinRoom}>
               Join
             </Button>
           </DialogFooter>

@@ -14,8 +14,8 @@ function App() {
 
 
   return (
-   <div  style={{ backgroundColor: "#fef6e4" }} >
-   
+   <div className="bg-background">
+
     <BrowserRouter>
       <RecoilRoot>
         <div className="flex flex-col min-h-screen">

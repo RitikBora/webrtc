@@ -23,16 +23,16 @@ export const EndCallPopup = () =>
     }
     return(
         <Dialog open={isCallEnded} onOpenChange={setIsCallEnded}>
-        <DialogContent className="sm:max-w-[425px] bg-[#fef6e4] text-[#001858]">
+        <DialogContent className="dark sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold">Call Ended</DialogTitle>
-            <DialogDescription className="text-[#172c66]">
+            <DialogTitle>Call ended</DialogTitle>
+            <DialogDescription>
               Your video call has been terminated.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button onClick={goToHomepage} className="bg-[#f582ae] text-[#001858] hover:bg-[#f582ae]/80">
-              Go to Homepage
+            <Button onClick={goToHomepage}>
+              Go to homepage
             </Button>
           </DialogFooter>
         </DialogContent>

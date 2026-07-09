@@ -7,10 +7,36 @@ export default {
   ],
   theme: {
   	extend: {
+  		fontFamily: {
+  			display: ['Sora', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+  			body: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+  		},
   		borderRadius: {
-  			lg: 'var(--radius)',
-  			md: 'calc(var(--radius) - 2px)',
-  			sm: 'calc(var(--radius) - 4px)'
+  			xs: 'var(--radius-xs)',
+  			sm: 'var(--radius-sm)',
+  			md: 'var(--radius-md)',
+  			lg: 'var(--radius-lg)',
+  			xl: 'var(--radius-xl)',
+  			pill: 'var(--radius-pill)',
+  		},
+  		boxShadow: {
+  			xs: 'var(--shadow-xs)',
+  			sm: 'var(--shadow-sm)',
+  			md: 'var(--shadow-md)',
+  			lg: 'var(--shadow-lg)',
+  			focus: 'var(--shadow-focus)',
+  			'accent-glow': 'var(--shadow-accent-glow)',
+  		},
+  		transitionTimingFunction: {
+  			smooth: 'var(--ease-smooth)',
+  			standard: 'var(--ease-standard)',
+  			spring: 'var(--ease-spring)',
+  		},
+  		transitionDuration: {
+  			fast: 'var(--dur-fast)',
+  			base: 'var(--dur-base)',
+  			slow: 'var(--dur-slow)',
+  			slower: 'var(--dur-slower)',
   		},
   		colors: {
   			background: 'hsl(var(--background))',
@@ -46,13 +72,28 @@ export default {
   			border: 'hsl(var(--border))',
   			input: 'hsl(var(--input))',
   			ring: 'hsl(var(--ring))',
-  			chart: {
-  				'1': 'hsl(var(--chart-1))',
-  				'2': 'hsl(var(--chart-2))',
-  				'3': 'hsl(var(--chart-3))',
-  				'4': 'hsl(var(--chart-4))',
-  				'5': 'hsl(var(--chart-5))'
-  			}
+  			ink: {
+  				0: 'var(--ink-0)',
+  				50: 'var(--ink-50)',
+  				800: 'var(--ink-800)',
+  				900: 'var(--ink-900)',
+  				950: 'var(--ink-950)'
+  			},
+  			connected: {
+  				DEFAULT: 'var(--status-connected)',
+  				bg: 'var(--status-connected-bg)',
+  				text: 'var(--status-connected-text)'
+  			},
+  			danger: {
+  				DEFAULT: 'var(--status-danger)',
+  				bg: 'var(--status-danger-bg)',
+  				text: 'var(--status-danger-text)'
+  			},
+  			warning: {
+  				DEFAULT: 'var(--status-warning)',
+  				bg: 'var(--status-warning-bg)',
+  				text: 'var(--status-warning-text)'
+  			},
   		}
   	}
   },
