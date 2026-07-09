@@ -37,8 +37,8 @@ export const Room = () => {
 
   useEffect(() =>
   {
-      const socket = new WebSocket('ws://ritikboradev.com:8082');
-      // const socket = new WebSocket("ws://localhost:8082")
+      const socket = new WebSocket("ws://localhost:8082")
+      // const socket = new WebSocket('ws://ritikboradev.com:8082');
       const pc = new RTCPeerConnection();
       setPC(pc);
 
