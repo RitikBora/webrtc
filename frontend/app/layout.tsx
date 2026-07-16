@@ -6,9 +6,6 @@ import { AppShell } from "@/components/AppShell"
 
 export const metadata: Metadata = {
   title: "Meetwise",
-  icons: {
-    icon: "/vite.svg",
-  },
 }
 
 // Theme resolution (runs before paint, no flash):
